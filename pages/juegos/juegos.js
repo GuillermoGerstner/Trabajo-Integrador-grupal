@@ -202,6 +202,28 @@ function showValidMoves(piece, pos) {
         }
     }
 
+    function checkKnightMoves() {
+        // L shaped movesets
+        const knightMoves = [
+            [x - 2, y - 1],
+            [x - 2, y + 1],
+            [x - 1, y - 2],
+            [x - 1, y + 2],
+            [x + 1, y - 2],
+            [x + 1, y + 2],
+            [x + 2, y - 1],
+            [x + 2, y + 1]
+        ];
+    
+        knightMoves.forEach(([i, j]) => {
+            if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
+                if (board[i][j] === ' ' || black.includes(board[i][j])) {
+                    validPositions.push([i, j]);
+                }
+            }
+        });
+    }
+
     switch (piece) {
         case 'p': 
             let up1 = [x - 1, y];
@@ -224,6 +246,27 @@ function showValidMoves(piece, pos) {
             if (board[diagR[0]][diagR[1]] !== ' ' && black.includes(board[up1[0]][up1[1]])) {
                 validPositions.push(diagR);
             }
+            highlightValid(validPositions);
+            break;
+        case 'k':
+            // Up down left right diagonal
+            const kingMoves = [
+                [x - 1, y - 1], [x - 1, y], [x - 1, y + 1],
+                [x, y - 1],                     [x, y + 1],
+                [x + 1, y - 1], [x + 1, y], [x + 1, y + 1]
+            ];
+
+            kingMoves.forEach(([i, j]) => {
+                if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
+                    if (board[i][j] === ' ' || black.includes(board[i][j])) {
+                        validPositions.push([i, j]);
+                    }
+                }
+            });
+            highlightValid(validPositions);
+            break;
+        case 'n': 
+            checkKnightMoves();
             highlightValid(validPositions);
             break;
         case 'r':
@@ -306,7 +349,11 @@ function drawBoard() {
                 case 'n': 
                     img.src = '../../images/juegos/W_Knight.png'; 
                     square.appendChild(img);
-                    break
+                    img.addEventListener('click', function handlePieceClick() {
+                        showValidMoves(piece, pos);
+                        img.removeEventListener('click', handlePieceClick);
+                    });
+                    break;
                 case 'B': 
                     img.src = '../../images/juegos/B_Bishop.png'; 
                     square.appendChild(img);
@@ -338,7 +385,11 @@ function drawBoard() {
                 case 'k': 
                     img.src = '../../images/juegos/W_King.png'; 
                     square.appendChild(img);
-                    break
+                    img.addEventListener('click', function handlePieceClick() {
+                        showValidMoves(piece, pos);
+                        img.removeEventListener('click', handlePieceClick);
+                    });
+                    break;
             }
 
 
