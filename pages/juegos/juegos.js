@@ -58,7 +58,6 @@ let eventHandlers = [];
 
 function handleValidPosClick(newPosStr, x, y, piece) {
     let newPos = [Number(newPosStr[0]), Number(newPosStr[2])];
-    console.log(newPos);
     movePiece(piece, x, y, newPos[0], newPos[1]);
     removeValidMoves();
 }
@@ -113,7 +112,6 @@ function showValidMoves(piece, pos) {
         }
         // Look left
         for (let i = y - 1; i >= 0; i--) {
-            console.log(board[x][i])
             if (board[x][i] === ' ') {
                 validPositions.push([x, i]);
             } else if (black.includes(board[x][i])) {
@@ -398,8 +396,3 @@ function drawBoard() {
 }
 
 drawBoard();
-
-// movePiece('p', 6, 0, 4, 0);
-// drawBoard();
-
-console.log(board)
