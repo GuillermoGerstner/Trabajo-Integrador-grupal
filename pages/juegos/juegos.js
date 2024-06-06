@@ -12,6 +12,9 @@ let board = [
     ];
   //  0    1    2    3    4    5    6    7
 
+let white = ['p', 'r', 'n', 'b', 'q', 'k'];
+let black = ['P', 'R', 'N', 'B', 'Q', 'K'];
+
 function inCheck() {
     return false;
 }
@@ -49,8 +52,6 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
         console.error('Jugada Invalida!');
         drawBoard();
     }
-
-    console.log(board)
 }
 
 let eventHandlers = [];
@@ -84,10 +85,10 @@ function showValidMoves(piece, pos) {
         });
     }
 
+    let validPositions = [];
+
     switch (piece) {
         case 'p': 
-            console.log(piece, pos);
-            let validPositions = [];
             let up1 = [x - 1, y];
             let up2 = [x - 2, y];
             let diagL = [x - 1, y - 1];
@@ -97,7 +98,7 @@ function showValidMoves(piece, pos) {
             if (board[up1[0]][up1[1]] === ' ') {
                 validPositions.push(up1);
             }
-            if (x > 1) {
+            if (x > 1) { // Check if out of bounds
                 if (board[up2[0]][up2[1]] === ' ' && x === 6) {
                     validPositions.push(up2);
                 }
@@ -108,11 +109,71 @@ function showValidMoves(piece, pos) {
             if (board[diagR[0]][diagR[1]] !== ' ') {
                 validPositions.push(diagR);
             }
-
-
-            // check for diagnal and add to squares if piece there
             highlightValid(validPositions);
-            break
+            break;
+        case 'r':
+            let rookRow = board[x];
+            let rookCol = [];
+
+            // get col
+            for (let i = 0; i < 8; i++) {
+                rookCol.push(board[i][y]);
+            }
+
+            // Look Up
+            for (let i = x - 1; i >= 0; i--) {
+               // console.log(board[i][y])
+                if (board[i][y] === ' ') {
+                    validPositions.push([i, y]);
+                } else if (black.includes(board[i][y])) {
+                    validPositions.push([i, y]);
+                    break;
+                } else {
+                    break;
+                }
+            }
+
+            // Look down
+            for (let i = x + 1; i <= 7; i++) {
+                if (board[i][y] === ' ') {
+                    validPositions.push([i, y]);
+                } else if (black.includes(board[i][y])) {
+                    validPositions.push([i, y]);
+                    break;
+                } else {
+                    break;
+                }
+            }
+
+            // Look left
+            for (let i = y - 1; i >= 0; i--) {
+                console.log(board[x][i])
+                if (board[x][i] === ' ') {
+                    validPositions.push([x, i]);
+                } else if (black.includes(board[x][i])) {
+                    validPositions.push([x, i]);
+                    break;
+                } else {
+                    break;
+                }
+            }
+
+            // Look right
+            for (let i = y + 1; i <= 7; i++) {
+                if (board[x][i] === ' ') {
+                    validPositions.push([x, i]);
+                } else if (black.includes(board[x][i])) {
+                    validPositions.push([x, i]);
+                    break;
+                } else {
+                    break;
+                }
+            }
+
+
+            console.log([rookRow, rookCol])
+            highlightValid(validPositions);
+            break;
     }
 }
 
@@ -168,6 +229,10 @@ function drawBoard() {
                 case 'r': 
                     img.src = '../../images/juegos/W_Rook.png'; 
                     square.appendChild(img);
+                    img.addEventListener('click', function handlePieceClick() {
+                        showValidMoves(piece, pos);
+                        img.removeEventListener('click', handlePieceClick);
+                    });
                     break
                 case 'N': 
                     img.src = '../../images/juegos/B_Knight.png'; 
