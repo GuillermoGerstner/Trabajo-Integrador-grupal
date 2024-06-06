@@ -43,10 +43,47 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
     }
 }
 
+function showValidMoves(piece, pos) {
+    removeValidMoves();
+    let x = pos[0];
+    let y = pos[1];
+
+    function highlightValid(squares) {
+        squares.forEach((square) => {
+            let squareUI = document.getElementById(`${square[0]}-${square[1]}`);
+            squareUI.style.backgroundColor = 'yellow';
+        });
+    }
+
+    switch (piece) {
+        case 'p': 
+            console.log(piece, pos);
+            let squares = [[x - 1, y], [x - 2, y]];
+            // check for diagnol and add to squares if piece there
+            highlightValid(squares);
+            break
+    }
+}
+
+function removeValidMoves() {
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+            let square = document.getElementById(`${i}-${j}`);
+
+            if (square.className === 'square squareWhite') {
+                square.style.backgroundColor = 'wheat';
+            } else {
+                square.style.backgroundColor = 'rgb(111, 79, 37)';
+            }
+        }
+    }
+}
+
 function drawBoard() {
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
             let piece = board[i][j];
+            let pos = [i, j];
 
             let square = document.getElementById(`${i}-${j}`);
             let img = document.createElement('img');
@@ -60,6 +97,10 @@ function drawBoard() {
                 case 'p': 
                     img.src = '../../images/juegos/W_Pawn.png'; 
                     square.appendChild(img);
+                    img.addEventListener('click', () => {
+                        showValidMoves(piece, pos);
+                        console.log(img.width, img.height)
+                    })
                     break
                 case 'R': 
                     img.src = '../../images/juegos/B_Rook.png'; 
@@ -110,7 +151,7 @@ function drawBoard() {
 
 drawBoard();
 
-movePiece('p', 6, 0, 4, 0);
+// movePiece('p', 6, 0, 4, 0);
 
 drawBoard();
 
