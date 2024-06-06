@@ -87,6 +87,55 @@ function showValidMoves(piece, pos) {
 
     let validPositions = [];
 
+    function checkSliding() {
+        // Look Up
+         for (let i = x - 1; i >= 0; i--) {
+        // console.log(board[i][y])
+            if (board[i][y] === ' ') {
+                validPositions.push([i, y]);
+            } else if (black.includes(board[i][y])) {
+                validPositions.push([i, y]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look down
+        for (let i = x + 1; i <= 7; i++) {
+            if (board[i][y] === ' ') {
+                validPositions.push([i, y]);
+            } else if (black.includes(board[i][y])) {
+                validPositions.push([i, y]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look left
+        for (let i = y - 1; i >= 0; i--) {
+            console.log(board[x][i])
+            if (board[x][i] === ' ') {
+                validPositions.push([x, i]);
+            } else if (black.includes(board[x][i])) {
+                validPositions.push([x, i]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look right
+        for (let i = y + 1; i <= 7; i++) {
+            if (board[x][i] === ' ') {
+                validPositions.push([x, i]);
+            } else if (black.includes(board[x][i])) {
+                validPositions.push([x, i]);
+                break;
+            } else {
+                break;
+            }
+        }
+    }
+
     switch (piece) {
         case 'p': 
             let up1 = [x - 1, y];
@@ -103,75 +152,16 @@ function showValidMoves(piece, pos) {
                     validPositions.push(up2);
                 }
             }
-            if (board[diagL[0]][diagL[1]] !== ' ') {
+            if (board[diagL[0]][diagL[1]] !== ' ' && black.includes(board[up1[0]][up1[1]])) {
                 validPositions.push(diagL);
             }
-            if (board[diagR[0]][diagR[1]] !== ' ') {
+            if (board[diagR[0]][diagR[1]] !== ' ' && black.includes(board[up1[0]][up1[1]])) {
                 validPositions.push(diagR);
             }
             highlightValid(validPositions);
             break;
         case 'r':
-            let rookRow = board[x];
-            let rookCol = [];
-
-            // get col
-            for (let i = 0; i < 8; i++) {
-                rookCol.push(board[i][y]);
-            }
-
-            // Look Up
-            for (let i = x - 1; i >= 0; i--) {
-               // console.log(board[i][y])
-                if (board[i][y] === ' ') {
-                    validPositions.push([i, y]);
-                } else if (black.includes(board[i][y])) {
-                    validPositions.push([i, y]);
-                    break;
-                } else {
-                    break;
-                }
-            }
-
-            // Look down
-            for (let i = x + 1; i <= 7; i++) {
-                if (board[i][y] === ' ') {
-                    validPositions.push([i, y]);
-                } else if (black.includes(board[i][y])) {
-                    validPositions.push([i, y]);
-                    break;
-                } else {
-                    break;
-                }
-            }
-
-            // Look left
-            for (let i = y - 1; i >= 0; i--) {
-                console.log(board[x][i])
-                if (board[x][i] === ' ') {
-                    validPositions.push([x, i]);
-                } else if (black.includes(board[x][i])) {
-                    validPositions.push([x, i]);
-                    break;
-                } else {
-                    break;
-                }
-            }
-
-            // Look right
-            for (let i = y + 1; i <= 7; i++) {
-                if (board[x][i] === ' ') {
-                    validPositions.push([x, i]);
-                } else if (black.includes(board[x][i])) {
-                    validPositions.push([x, i]);
-                    break;
-                } else {
-                    break;
-                }
-            }
-
-
-            console.log([rookRow, rookCol])
+            checkSliding();
             highlightValid(validPositions);
             break;
     }
