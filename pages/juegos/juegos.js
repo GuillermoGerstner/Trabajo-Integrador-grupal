@@ -17,6 +17,12 @@ function inCheck() {
 }
 
 function checkValidity(piece, startRow, startCol, endRow, endCol) {
+    let square = document.getElementById(`${endRow}-${endCol}`);
+    // if (square.style.backgroundColor !== 'yellow') {
+    //     console.log('invalid not yellow')
+    //     return false;
+    // }
+
     if (piece === 'p') {
         if (endRow >= startRow) {
             return false;
@@ -38,9 +44,28 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
     if (isValid) {
         board[startRow][startCol] = ' ';
         board[endRow][endCol] = piece;
+        drawBoard();
     } else {
-        console.error('Jugada Invalida!')
+        console.error('Jugada Invalida!');
+        drawBoard();
     }
+}
+
+let eventHandlers = [];
+
+function handleValidPosClick(newPosStr, x, y, piece) {
+    let newPos = [Number(newPosStr[0]), Number(newPosStr[2])];
+    console.log(newPos);
+    movePiece(piece, x, y, newPos[0], newPos[1]);
+    removeValidMoves();
+}
+
+function handleValidPosClickHandler(squareId, x, y, piece) {
+    function clickHandler() {
+        handleValidPosClick(squareId, x, y, piece);
+    }
+    eventHandlers.push(clickHandler);
+    return clickHandler;
 }
 
 function showValidMoves(piece, pos) {
@@ -48,19 +73,21 @@ function showValidMoves(piece, pos) {
     let x = pos[0];
     let y = pos[1];
 
-    function highlightValid(squares) {
-        squares.forEach((square) => {
-            let squareUI = document.getElementById(`${square[0]}-${square[1]}`);
-            squareUI.style.backgroundColor = 'yellow';
+    function highlightValid(validPositions) {
+        validPositions.forEach((position) => {
+            let square = document.getElementById(`${position[0]}-${position[1]}`);
+            square.style.backgroundColor = 'yellow';
+            let clickHandler = handleValidPosClickHandler(square.id, x, y, piece);
+            square.addEventListener('click', clickHandler);
         });
     }
 
     switch (piece) {
         case 'p': 
             console.log(piece, pos);
-            let squares = [[x - 1, y], [x - 2, y]];
-            // check for diagnol and add to squares if piece there
-            highlightValid(squares);
+            let validPositions = [[x - 1, y], [x - 2, y]];
+            // check for diagnal and add to squares if piece there
+            highlightValid(validPositions);
             break
     }
 }
@@ -70,13 +97,20 @@ function removeValidMoves() {
         for (let j = 0; j < board[i].length; j++) {
             let square = document.getElementById(`${i}-${j}`);
 
-            if (square.className === 'square squareWhite') {
+            if (square.className === 'square squareWhite' && square.style.backgroundColor === 'yellow') {
                 square.style.backgroundColor = 'wheat';
-            } else {
+                eventHandlers.forEach(handler => {
+                    square.removeEventListener('click', handler);
+                });
+            } else if (square.className === 'square squareBlack' && square.style.backgroundColor === 'yellow') {
                 square.style.backgroundColor = 'rgb(111, 79, 37)';
+                eventHandlers.forEach(handler => {
+                    square.removeEventListener('click', handler);
+                });
             }
         }
     }
+    eventHandlers = [];
 }
 
 function drawBoard() {
@@ -87,6 +121,7 @@ function drawBoard() {
 
             let square = document.getElementById(`${i}-${j}`);
             let img = document.createElement('img');
+            img.draggable = false;
             square.innerHTML = '';
 
             switch (piece) {
@@ -97,10 +132,10 @@ function drawBoard() {
                 case 'p': 
                     img.src = '../../images/juegos/W_Pawn.png'; 
                     square.appendChild(img);
-                    img.addEventListener('click', () => {
+                    img.addEventListener('click', function handlePieceClick() {
                         showValidMoves(piece, pos);
-                        console.log(img.width, img.height)
-                    })
+                        img.removeEventListener('click', handlePieceClick);
+                    });
                     break
                 case 'R': 
                     img.src = '../../images/juegos/B_Rook.png'; 
@@ -152,7 +187,6 @@ function drawBoard() {
 drawBoard();
 
 // movePiece('p', 6, 0, 4, 0);
-
-drawBoard();
+// drawBoard();
 
 console.log(board)
