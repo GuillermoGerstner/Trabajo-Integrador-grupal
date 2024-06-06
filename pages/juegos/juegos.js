@@ -136,6 +136,72 @@ function showValidMoves(piece, pos) {
         }
     }
 
+    function checkDiagonalSliding() {
+        // Look Up-Left
+        let i = x - 1;
+        let j = y - 1;
+        while (i >= 0 && j >= 0) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (black.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i--;
+            j--;
+        }
+
+        // Look Up-Right
+        i = x - 1;
+        j = y + 1;
+        while (i >= 0 && j <= 7) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (black.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i--;
+            j++;
+        }
+
+        // Look Down-Left
+        i = x + 1;
+        j = y - 1;
+        while (i <= 7 && j >= 0) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (black.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i++;
+            j--;
+        }
+
+        // Look Down-Right
+        i = x + 1;
+        j = y + 1;
+        while (i <= 7 && j <= 7) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (black.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i++;
+            j++;
+        }
+    }
+
     switch (piece) {
         case 'p': 
             let up1 = [x - 1, y];
@@ -162,6 +228,15 @@ function showValidMoves(piece, pos) {
             break;
         case 'r':
             checkSliding();
+            highlightValid(validPositions);
+            break;
+        case 'b':
+            checkDiagonalSliding();
+            highlightValid(validPositions);
+            break;
+        case 'q':
+            checkSliding();
+            checkDiagonalSliding();
             highlightValid(validPositions);
             break;
     }
@@ -211,7 +286,7 @@ function drawBoard() {
                         showValidMoves(piece, pos);
                         img.removeEventListener('click', handlePieceClick);
                     });
-                    break
+                    break;
                 case 'R': 
                     img.src = '../../images/juegos/B_Rook.png'; 
                     square.appendChild(img);
@@ -223,7 +298,7 @@ function drawBoard() {
                         showValidMoves(piece, pos);
                         img.removeEventListener('click', handlePieceClick);
                     });
-                    break
+                    break;
                 case 'N': 
                     img.src = '../../images/juegos/B_Knight.png'; 
                     square.appendChild(img);
@@ -239,7 +314,11 @@ function drawBoard() {
                 case 'b': 
                     img.src = '../../images/juegos/W_Bishop.png'; 
                     square.appendChild(img);
-                    break
+                    img.addEventListener('click', function handlePieceClick() {
+                        showValidMoves(piece, pos);
+                        img.removeEventListener('click', handlePieceClick);
+                    });
+                    break;
                 case 'Q': 
                     img.src = '../../images/juegos/B_Queen.png'; 
                     square.appendChild(img);
@@ -247,7 +326,11 @@ function drawBoard() {
                 case 'q': 
                     img.src = '../../images/juegos/W_Queen.png'; 
                     square.appendChild(img);
-                    break
+                    img.addEventListener('click', function handlePieceClick() {
+                        showValidMoves(piece, pos);
+                        img.removeEventListener('click', handlePieceClick);
+                    });
+                    break;
                 case 'K': 
                     img.src = '../../images/juegos/B_King.png'; 
                     square.appendChild(img);
