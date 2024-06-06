@@ -23,15 +23,15 @@ function checkValidity(piece, startRow, startCol, endRow, endCol) {
     //     return false;
     // }
 
-    if (piece === 'p') {
-        if (endRow >= startRow) {
-            return false;
-        }
+    // if (piece === 'p') {
+    //     if (endRow >= startRow) {
+    //         return false;
+    //     }
 
-        if (startCol !== endCol) {
-            return false;
-        }
-    }
+    //     if (startCol !== endCol) {
+    //         return false;
+    //     }
+    // }
 
     return true;
 }
@@ -49,6 +49,8 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
         console.error('Jugada Invalida!');
         drawBoard();
     }
+
+    console.log(board)
 }
 
 let eventHandlers = [];
@@ -85,7 +87,29 @@ function showValidMoves(piece, pos) {
     switch (piece) {
         case 'p': 
             console.log(piece, pos);
-            let validPositions = [[x - 1, y], [x - 2, y]];
+            let validPositions = [];
+            let up1 = [x - 1, y];
+            let up2 = [x - 2, y];
+            let diagL = [x - 1, y - 1];
+            let diagR = [x - 1, y + 1];
+
+            // Check pawn possible positions
+            if (board[up1[0]][up1[1]] === ' ') {
+                validPositions.push(up1);
+            }
+            if (x > 1) {
+                if (board[up2[0]][up2[1]] === ' ' && x === 6) {
+                    validPositions.push(up2);
+                }
+            }
+            if (board[diagL[0]][diagL[1]] !== ' ') {
+                validPositions.push(diagL);
+            }
+            if (board[diagR[0]][diagR[1]] !== ' ') {
+                validPositions.push(diagR);
+            }
+
+
             // check for diagnal and add to squares if piece there
             highlightValid(validPositions);
             break
