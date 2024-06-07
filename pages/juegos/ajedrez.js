@@ -13,6 +13,8 @@ let board = [
 let white = ['p', 'r', 'n', 'b', 'q', 'k'];
 let black = ['P', 'R', 'N', 'B', 'Q', 'K'];
 
+let moveSound = new Audio('./audio/moveSound.mp3');
+
 function inCheck() {
     return false;
 }
@@ -267,6 +269,7 @@ function movePieceBlack(piece, startRow, startCol, endRow, endCol) {
     if (isValid) {
         board[startRow][startCol] = ' ';
         board[endRow][endCol] = piece;
+        moveSound.play();
         drawBoard();
     } else {
         drawBoard();
@@ -281,7 +284,10 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
         board[startRow][startCol] = ' ';
         board[endRow][endCol] = piece;
         drawBoard();
-        makeRandomMoveBlack();
+        moveSound.play();
+        setTimeout(function() {
+            makeRandomMoveBlack();
+        }, 2000);
     } else {
         console.error('Jugada Invalida!');
         drawBoard();
