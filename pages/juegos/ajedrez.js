@@ -312,7 +312,7 @@ function showValidMoves(piece, pos) {
     function highlightValid(validPositions) {
         validPositions.forEach((position) => {
             let square = document.getElementById(`${position[0]}-${position[1]}`);
-            square.style.backgroundColor = 'yellow';
+            square.style.backgroundColor = 'rgb(147, 222, 122)';
             let clickHandler = handleValidPosClickHandler(square.id, x, y, piece);
             square.addEventListener('click', clickHandler);
         });
@@ -521,13 +521,13 @@ function removeValidMoves() {
         for (let j = 0; j < board[i].length; j++) {
             let square = document.getElementById(`${i}-${j}`);
 
-            if (square.className === 'square squareWhite' && square.style.backgroundColor === 'yellow') {
-                square.style.backgroundColor = 'wheat';
+            if (square.className === 'square squareWhite' && square.style.backgroundColor === 'rgb(147, 222, 122)') {
+                square.style.backgroundColor = 'rgb(233, 221, 200)';
                 eventHandlers.forEach(handler => {
                     square.removeEventListener('click', handler);
                 });
-            } else if (square.className === 'square squareBlack' && square.style.backgroundColor === 'yellow') {
-                square.style.backgroundColor = 'rgb(111, 79, 37)';
+            } else if (square.className === 'square squareBlack' && square.style.backgroundColor === 'rgb(147, 222, 122)') {
+                square.style.backgroundColor = 'rgb(93, 141, 93)';
                 eventHandlers.forEach(handler => {
                     square.removeEventListener('click', handler);
                 });
@@ -546,6 +546,7 @@ function drawBoard() {
             let square = document.getElementById(`${i}-${j}`);
             let img = document.createElement('img');
             img.draggable = false;
+            img.className = 'piece';
             square.innerHTML = '';
 
             switch (piece) {
