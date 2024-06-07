@@ -1,5 +1,3 @@
-const boardUI = document.getElementById('board');
-
 let board = [
     ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'], // 0
     ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'], // 1
@@ -49,6 +47,17 @@ function makeRandomMoveBlack() {
     } else {
         let endRow = randomMove[0];
         let endCol = randomMove[1];
+
+        // Attack white if possible
+        validMoves.forEach((move) => {
+            let x = move[0];
+            let y = move[1];
+
+            if (white.includes(board[x][y])) {
+                endRow = x;
+                endCol = y;
+            }
+        })
     
         movePieceBlack(pieceType, startRow, startCol, endRow, endCol)
     }
@@ -228,7 +237,7 @@ function getValidMovesBlack(piece, pos) {
     
             kingMoves.forEach(([i, j]) => {
                 if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
-                    if (board[i][j] === ' ' || black.includes(board[i][j])) {
+                    if (board[i][j] === ' ' || white.includes(board[i][j])) {
                         validPositions.push([i, j]);
                     }
                 }
