@@ -50,6 +50,18 @@ a:hover {
   background-color: #d9cbff;
 }
 
+header div a img {
+  width: 60px;
+}
+header div a {
+  background-color: white;
+  border-radius: 0px;
+  padding: 0px;
+}
+header div a:hover {
+  background-color: white;
+}
+
 main {
   margin: 40px 0;
 }
@@ -110,6 +122,15 @@ h1 {
 }
 .integrantes_card a:hover {
   color: white;
+}
+
+.avances_subtitle {
+  width: fit-content;
+  margin: 0 auto;
+}
+.avances_subtitle_text {
+  margin: 20px auto;
+  max-width: 1000px;
 }
 
 .header_menu_burger {
