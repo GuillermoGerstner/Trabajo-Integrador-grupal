@@ -18,9 +18,13 @@ let moveSound = new Audio('./audio/moveSound.mp3');
 let blackInCheck = false;
 let whiteInCheck = false;
 
-function inCheck(color) {
+function inCheck(board, color, futurePos) {
     let kingPosition = findKing(color, board);
     let opponentColor = (color === 'white') ? 'black' : 'white';
+
+    if (futurePos !== false) {
+        kingPosition = futurePos;
+    }
 
     // Check for opponent's pieces threatening the king
     for (let i = 0; i < board.length; i++) {
@@ -108,7 +112,28 @@ function makeRandomMoveBlack() {
                 endCol = y;
             }
         })
-    
+
+        // If in check, see if move puts king in check
+        if (blackInCheck) {
+            validMoves.forEach((move) => {
+                console.log(validMoves)
+                let check = inCheck(board, 'black', move);
+                console.log(`Would be in Check: ${check}, Move: ${move}`)
+                if (!check) {
+                    let x = move[0];
+                    let y = move[1];
+                    endRow = x;
+                    endCol = y;
+                } else {
+                    console.log('CHECKMATE')
+                }
+            });
+        }
+
+        // Right now if the king doesn't find a move to not be in check, he does the random move anyway - checkmate
+        // Need to check if other pieces can block
+        // But checking if it would put him in check is correct at least
+
         movePieceBlack(pieceType, startRow, startCol, endRow, endCol)
     }
 }
@@ -741,8 +766,16 @@ function showValidMoves(piece, pos) {
 
             kingMoves.forEach(([i, j]) => {
                 if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
+                    let tempboard = JSON.parse(JSON.stringify(board));
+                    tempboard[i][j] = 'k';
+                    tempboard[x][y] = ' ';
+                    console.log(tempboard)
+                    let check = inCheck(tempboard, 'white', [i, j]);
+                    console.log(check, [i, j]);
                     if (board[i][j] === ' ' || black.includes(board[i][j])) {
-                        validPositions.push([i, j]);
+                        if (!check) {
+                            validPositions.push([i, j]);
+                        }
                     }
                 }
             });
@@ -790,8 +823,8 @@ function removeValidMoves() {
 }
 
 function drawBoard() {
-    whiteInCheck = inCheck('white');
-    blackInCheck = inCheck('black');
+    whiteInCheck = inCheck(board, 'white', false);
+    blackInCheck = inCheck(board, 'black', false);
     console.log(`White: ${whiteInCheck}`);
     console.log(`Black ${blackInCheck}`)
     for (let i = 0; i < board.length; i++) {
@@ -814,7 +847,9 @@ function drawBoard() {
                     img.src = '../../images/juegos/W_Pawn.png'; 
                     square.appendChild(img);
                     img.addEventListener('click', function handlePieceClick() {
-                        showValidMoves(piece, pos);
+                        if (!whiteInCheck) {
+                            showValidMoves(piece, pos);
+                        }
                         img.removeEventListener('click', handlePieceClick);
                     });
                     break;
@@ -826,7 +861,9 @@ function drawBoard() {
                     img.src = '../../images/juegos/W_Rook.png'; 
                     square.appendChild(img);
                     img.addEventListener('click', function handlePieceClick() {
-                        showValidMoves(piece, pos);
+                        if (!whiteInCheck) {
+                            showValidMoves(piece, pos);
+                        }
                         img.removeEventListener('click', handlePieceClick);
                     });
                     break;
@@ -838,7 +875,9 @@ function drawBoard() {
                     img.src = '../../images/juegos/W_Knight.png'; 
                     square.appendChild(img);
                     img.addEventListener('click', function handlePieceClick() {
-                        showValidMoves(piece, pos);
+                        if (!whiteInCheck) {
+                            showValidMoves(piece, pos);
+                        }
                         img.removeEventListener('click', handlePieceClick);
                     });
                     break;
@@ -850,7 +889,9 @@ function drawBoard() {
                     img.src = '../../images/juegos/W_Bishop.png'; 
                     square.appendChild(img);
                     img.addEventListener('click', function handlePieceClick() {
-                        showValidMoves(piece, pos);
+                        if (!whiteInCheck) {
+                            showValidMoves(piece, pos);
+                        }
                         img.removeEventListener('click', handlePieceClick);
                     });
                     break;
@@ -862,7 +903,9 @@ function drawBoard() {
                     img.src = '../../images/juegos/W_Queen.png'; 
                     square.appendChild(img);
                     img.addEventListener('click', function handlePieceClick() {
-                        showValidMoves(piece, pos);
+                        if (!whiteInCheck) {
+                            showValidMoves(piece, pos);
+                        }
                         img.removeEventListener('click', handlePieceClick);
                     });
                     break;
