@@ -36,10 +36,14 @@ function makeRandomMoveBlack() {
     let validMoves = getValidMovesBlack(pieceType, randomPiece);
 
     let randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
-    let endRow = randomMove[0];
-    let endCol = randomMove[1];
-
-    movePieceBlack(pieceType, startRow, startCol, endRow, endCol)
+    if (randomMove === undefined) {
+        makeRandomMoveBlack();
+    } else {
+        let endRow = randomMove[0];
+        let endCol = randomMove[1];
+    
+        movePieceBlack(pieceType, startRow, startCol, endRow, endCol)
+    }
 }
 
 function getValidMovesBlack(piece, pos) {
@@ -200,10 +204,10 @@ function getValidMovesBlack(piece, pos) {
                     validPositions.push(down2);
                 }
             }
-            if (board[diagL[0]][diagL[1]] !== ' ' && white.includes(board[down1[0]][down1[1]])) {
+            if (board[diagL[0]][diagL[1]] !== ' ' && white.includes(board[diagL[0]][diagL[1]])) {
                 validPositions.push(diagL);
             }
-            if (board[diagR[0]][diagR[1]] !== ' ' && white.includes(board[down1[0]][down1[1]])) {
+            if (board[diagR[0]][diagR[1]] !== ' ' && white.includes(board[diagR[0]][diagR[1]])) {
                 validPositions.push(diagR);
             }
             break;
@@ -476,10 +480,10 @@ function showValidMoves(piece, pos) {
                     validPositions.push(up2);
                 }
             }
-            if (board[diagL[0]][diagL[1]] !== ' ' && black.includes(board[up1[0]][up1[1]])) {
+            if (board[diagL[0]][diagL[1]] !== ' ' && black.includes(board[diagL[0]][diagL[1]])) {
                 validPositions.push(diagL);
             }
-            if (board[diagR[0]][diagR[1]] !== ' ' && black.includes(board[up1[0]][up1[1]])) {
+            if (board[diagR[0]][diagR[1]] !== ' ' && black.includes(board[diagR[0]][diagR[1]])) {
                 validPositions.push(diagR);
             }
             highlightValid(validPositions);
