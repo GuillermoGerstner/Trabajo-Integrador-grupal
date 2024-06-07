@@ -15,6 +15,245 @@ let board = [
 let white = ['p', 'r', 'n', 'b', 'q', 'k'];
 let black = ['P', 'R', 'N', 'B', 'Q', 'K'];
 
+function makeRandomMoveBlack() {
+    let blackPiecesIndexes = [];
+
+    for (let i = 0; i < board.length; i++) {
+        for (let j = 0; j < board[i].length; j++) {
+        if (black.includes(board[i][j])) {
+            blackPiecesIndexes.push([i, j]);
+        }
+        }
+    }
+
+    // Select a random black piece
+    const randomPiece = blackPiecesIndexes[Math.floor(Math.random() * blackPiecesIndexes.length)];
+    let pieceType = board[randomPiece[0]][randomPiece[1]];
+    let startRow = randomPiece[0];
+    let startCol = randomPiece[1];
+
+    console.log(pieceType);
+    let validMoves = getValidMovesBlack(pieceType, randomPiece);
+
+    let randomMove = validMoves[Math.floor(Math.random() * validMoves.length)];
+    let endRow = randomMove[0];
+    let endCol = randomMove[1];
+
+    movePieceBlack(pieceType, startRow, startCol, endRow, endCol)
+}
+
+function getValidMovesBlack(piece, pos) {
+    let x = pos[0];
+    let y = pos[1];
+
+    let validPositions = [];
+
+    function checkSliding() {
+        // Look Up
+         for (let i = x - 1; i >= 0; i--) {
+        // console.log(board[i][y])
+            if (board[i][y] === ' ') {
+                validPositions.push([i, y]);
+            } else if (white.includes(board[i][y])) {
+                validPositions.push([i, y]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look down
+        for (let i = x + 1; i <= 7; i++) {
+            if (board[i][y] === ' ') {
+                validPositions.push([i, y]);
+            } else if (white.includes(board[i][y])) {
+                validPositions.push([i, y]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look left
+        for (let i = y - 1; i >= 0; i--) {
+            if (board[x][i] === ' ') {
+                validPositions.push([x, i]);
+            } else if (white.includes(board[x][i])) {
+                validPositions.push([x, i]);
+                break;
+            } else {
+                break;
+            }
+        }
+        // Look right
+        for (let i = y + 1; i <= 7; i++) {
+            if (board[x][i] === ' ') {
+                validPositions.push([x, i]);
+            } else if (white.includes(board[x][i])) {
+                validPositions.push([x, i]);
+                break;
+            } else {
+                break;
+            }
+        }
+    }
+
+    function checkDiagonalSliding() {
+        // Look Up-Left
+        let i = x - 1;
+        let j = y - 1;
+        while (i >= 0 && j >= 0) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (white.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i--;
+            j--;
+        }
+
+        // Look Up-Right
+        i = x - 1;
+        j = y + 1;
+        while (i >= 0 && j <= 7) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (white.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i--;
+            j++;
+        }
+
+        // Look Down-Left
+        i = x + 1;
+        j = y - 1;
+        while (i <= 7 && j >= 0) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (white.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i++;
+            j--;
+        }
+
+        // Look Down-Right
+        i = x + 1;
+        j = y + 1;
+        while (i <= 7 && j <= 7) {
+            if (board[i][j] === ' ') {
+                validPositions.push([i, j]);
+            } else if (white.includes(board[i][j])) {
+                validPositions.push([i, j]);
+                break;
+            } else {
+                break;
+            }
+            i++;
+            j++;
+        }
+    }
+
+    function checkKnightMoves() {
+        // L shaped movesets
+        const knightMoves = [
+            [x - 2, y - 1],
+            [x - 2, y + 1],
+            [x - 1, y - 2],
+            [x - 1, y + 2],
+            [x + 1, y - 2],
+            [x + 1, y + 2],
+            [x + 2, y - 1],
+            [x + 2, y + 1]
+        ];
+    
+        knightMoves.forEach(([i, j]) => {
+            if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
+                if (board[i][j] === ' ' || white.includes(board[i][j])) {
+                    validPositions.push([i, j]);
+                }
+            }
+        });
+    }
+
+    switch (piece) {
+        case 'P': 
+            let down1 = [x + 1, y];
+            let down2 = [x + 2, y];
+            let diagL = [x + 1, y + 1];
+            let diagR = [x + 1, y - 1];
+
+            // Check pawn possible positions
+            if (board[down1[0]][down1[1]] === ' ') {
+                validPositions.push(down1);
+            }
+            if (x < 6) { // Check if out of bounds
+                if (board[down2[0]][down2[1]] === ' ' && x === 1) {
+                    validPositions.push(down2);
+                }
+            }
+            if (board[diagL[0]][diagL[1]] !== ' ' && white.includes(board[down1[0]][down1[1]])) {
+                validPositions.push(diagL);
+            }
+            if (board[diagR[0]][diagR[1]] !== ' ' && white.includes(board[down1[0]][down1[1]])) {
+                validPositions.push(diagR);
+            }
+            break;
+        case 'K':
+            // Up down left right diagonal
+            const kingMoves = [
+                [x - 1, y - 1], [x - 1, y], [x - 1, y + 1],
+                [x, y - 1],                     [x, y + 1],
+                [x + 1, y - 1], [x + 1, y], [x + 1, y + 1]
+            ];
+    
+            kingMoves.forEach(([i, j]) => {
+                if (i >= 0 && i <= 7 && j >= 0 && j <= 7) { 
+                    if (board[i][j] === ' ' || black.includes(board[i][j])) {
+                        validPositions.push([i, j]);
+                    }
+                }
+            });
+            break;
+        case 'N': 
+            checkKnightMoves();
+            break;
+        case 'R':
+            checkSliding();
+            break;
+        case 'B':
+            checkDiagonalSliding();
+            break;
+        case 'Q':
+            checkSliding();
+            checkDiagonalSliding();
+            break;
+    }
+
+    return validPositions;
+}
+
+function movePieceBlack(piece, startRow, startCol, endRow, endCol) {
+    let isValid = checkValidity(piece, startRow, startCol, endRow, endCol);
+
+    if (isValid) {
+        board[startRow][startCol] = ' ';
+        board[endRow][endCol] = piece;
+        drawBoard();
+    } else {
+        drawBoard();
+        makeRandomMoveBlack();
+    }
+}
+
 function inCheck() {
     return false;
 }
@@ -39,8 +278,6 @@ function checkValidity(piece, startRow, startCol, endRow, endCol) {
     return true;
 }
 
-
-
 function movePiece(piece, startRow, startCol, endRow, endCol) {
     let isValid = checkValidity(piece, startRow, startCol, endRow, endCol);
 
@@ -48,6 +285,7 @@ function movePiece(piece, startRow, startCol, endRow, endCol) {
         board[startRow][startCol] = ' ';
         board[endRow][endCol] = piece;
         drawBoard();
+        makeRandomMoveBlack();
     } else {
         console.error('Jugada Invalida!');
         drawBoard();
